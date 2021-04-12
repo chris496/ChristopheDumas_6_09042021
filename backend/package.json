@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/chris496/ChristopheDumas_6_09042021/issues"
   },
-  "homepage": "https://github.com/chris496/ChristopheDumas_6_09042021#readme"
+  "homepage": "https://github.com/chris496/ChristopheDumas_6_09042021#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
