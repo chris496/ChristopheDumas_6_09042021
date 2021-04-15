@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/user');
+const sauceRoutes = require('./routes/sauce')
 
 const app = express();
 
@@ -12,6 +13,7 @@ mongoose.connect('mongodb+srv://user_1:UserOC_p6@cluster0.gjj4f.mongodb.net/myFi
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !')); 
 
+//CORS
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -20,11 +22,8 @@ app.use((req, res, next) => {
   });
 
 app.use(bodyParser.json());
-  
-app.use((req, res) => {
-    res.end('test 2')
-});
 
-app.use('/api/auth', userRoutes)
+app.use('/api/auth', userRoutes);
+app.use('/api/sauces', sauceRoutes);
 
 module.exports = app;
