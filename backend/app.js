@@ -1,3 +1,6 @@
+require('dotenv').config();
+const helmet = require('helmet');
+
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -8,11 +11,11 @@ const path = require('path');
 const app = express();
 
 // connexion à mongodb
-mongoose.connect('mongodb+srv://user_1:UserOC_p6@cluster0.gjj4f.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+mongoose.connect(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_CLUSTER}/${process.env.DATA_BASE_NAME}?retryWrites=true&w=majority`,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !')); 
+  .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 //CORS
 app.use((req, res, next) => {
@@ -23,6 +26,7 @@ app.use((req, res, next) => {
   });
 
 
+app.use(helmet());
 app.use(bodyParser.json());
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
