@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+//modèle des sauces
 const sauceSchema = mongoose.Schema({
     userId:{type:String},
     name:{type:String},

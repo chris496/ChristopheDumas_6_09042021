@@ -1,6 +1,7 @@
+// import des packages ou des routes
+
 require('dotenv').config();
 const helmet = require('helmet');
-
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -25,12 +26,12 @@ app.use((req, res, next) => {
     next();
   });
 
-
+// execution des fonctions
 app.use(helmet());
 app.use(bodyParser.json());
-
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/auth', userRoutes);
 app.use('/api/sauces', sauceRoutes);
 
+//export de app
 module.exports = app;

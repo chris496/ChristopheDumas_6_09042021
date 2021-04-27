@@ -7,7 +7,7 @@ function encrypt(){
     
 }
 exports.signup = (req, res, next) => {
-    const cryptMail = CryptoJS.HmacSHA256(req.body.email, "phrasesecrete").toString();
+    const cryptMail = CryptoJS.HmacSHA256(req.body.email, process.env.SECRETKEY).toString();
     console.log(cryptMail)
     
     bcrypt.hash(req.body.password, 10)
@@ -26,9 +26,10 @@ exports.signup = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
-    const cryptMail = CryptoJS.HmacSHA256(req.body.email, "phrasesecrete").toString();
+    const cryptMail = CryptoJS.HmacSHA256(req.body.email, process.env.SECRETKEY).toString();
     console.log(cryptMail)
-    //const decryptMail = CryptoJS.AES.decrypt(cryptMail, "phrasesecrete").toString();
+    //const decryptMail = CryptoJS.HmacSHA256(cryptMail, process.env.SECRETKEY).toString();
+    //console.log(decryptMail)
     //const test = decryptMail.toString(CryptoJS.enc.Utf8)
     //console.log(test)
     User.findOne({ email: cryptMail})
@@ -45,7 +46,7 @@ exports.login = (req, res, next) => {
                         userId: user._id,
                         token: jwt.sign(
                             { userId: user._id }, //paylod
-                            'RANDOM_TOKEN_SECRET',//key secret
+                            process.env.JWT_TOKEN,//key secret
                             { expiresIn: '2h' }
                         )
                     });

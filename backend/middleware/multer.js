@@ -1,5 +1,6 @@
 const multer = require('multer');
 
+//configuration des fichiers entrants (images des sauces)
 const MIME_TYPES = {
   'image/jpg': 'jpg',
   'image/jpeg': 'jpg',
