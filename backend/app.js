@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const userRoutes = require('./routes/user');
 const sauceRoutes = require('./routes/sauce');
 const path = require('path');
+const cookieSession = require('cookie-session')
 
 const app = express();
 
@@ -32,6 +33,16 @@ app.use(bodyParser.json());
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/auth', userRoutes);
 app.use('/api/sauces', sauceRoutes);
+
+// utilisation de cookie-session
+app.use(cookieSession({
+  secret:'s3Cur3',
+  secure: true,
+  httpOnly: true,
+  domain: 'http://localhost:3000'
+}));
+
+
 
 //export de app
 module.exports = app;

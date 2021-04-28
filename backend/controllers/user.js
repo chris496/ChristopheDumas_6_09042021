@@ -26,6 +26,7 @@ exports.signup = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
+    console.log(req.body.email)
     const cryptMail = CryptoJS.HmacSHA256(req.body.email, process.env.SECRETKEY).toString();
     console.log(cryptMail)
     //const decryptMail = CryptoJS.HmacSHA256(cryptMail, process.env.SECRETKEY).toString();
