@@ -58,6 +58,7 @@ exports.deleteOneSauce = (req, res, next) => {
                 { $push: {usersLiked: req.body.userId}, $inc: {likes: +1}}
             )
             .then(() => res.status(200).json({ message: 'Sauce like'}))
+          ///////////////////////////////////////////////////////////////////////////  .catch((error) => res.status(400).json({ error }));
             console.log("jackpot !!!!!")
             
         }

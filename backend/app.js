@@ -1,15 +1,20 @@
-// import des packages ou des routes
-
-require('dotenv').config();
-const helmet = require('helmet');
+// import des packages
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const path = require('path');
+const cookieSession = require('cookie-session');
+const helmet = require('helmet');
+const nocache = require('nocache');
+
+//gère les variables d'environnement
+require('dotenv').config();
+
+// import des routes
 const userRoutes = require('./routes/user');
 const sauceRoutes = require('./routes/sauce');
-const path = require('path');
-const cookieSession = require('cookie-session')
 
+//
 const app = express();
 
 // connexion à mongodb
@@ -28,21 +33,25 @@ app.use((req, res, next) => {
   });
 
 // execution des fonctions
+app.use(nocache());
 app.use(helmet());
 app.use(bodyParser.json());
-app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/auth', userRoutes);
 app.use('/api/sauces', sauceRoutes);
 
+// fichier static pour le traitement des images
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
 // utilisation de cookie-session
-app.use(cookieSession({
+app.use(
+  cookieSession({
   secret:'s3Cur3',
-  secure: true,
-  httpOnly: true,
-  domain: 'http://localhost:3000'
+  cookie: {
+    secure: true,
+    httpOnly: true,
+    domain: 'http://localhost:3000'
+  }
 }));
-
-
 
 //export de app
 module.exports = app;

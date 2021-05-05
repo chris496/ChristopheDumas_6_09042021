@@ -1,19 +1,22 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
-const CryptoJS = require('crypto-js');
+const maskdata = require('maskdata');
 
-function encrypt(){
-    
+//masquage email
+const emailMask2Options = {
+    maskWith : "*",
+    unmaskedStartCharactersBeforeAt: 2,
+    unmaskedStartCharactersAfterAt: 1,
+    maskAtTheRate: false
 }
+
+// fonction pour l'inscription de l'utilisateur
 exports.signup = (req, res, next) => {
-    const cryptMail = CryptoJS.HmacSHA256(req.body.email, process.env.SECRETKEY).toString();
-    console.log(cryptMail)
-    
     bcrypt.hash(req.body.password, 10)
         .then(hash => {
             const user = new User({
-                email:cryptMail,
+                email: maskdata.maskEmail2(req.body.email, emailMask2Options),
                 password:hash
             });
         user.save()
@@ -25,15 +28,10 @@ exports.signup = (req, res, next) => {
         .catch(error => res.status(500).json({error}));
 };
 
+// fonction pour la connexion de l'utilisateur
 exports.login = (req, res, next) => {
-    console.log(req.body.email)
-    const cryptMail = CryptoJS.HmacSHA256(req.body.email, process.env.SECRETKEY).toString();
-    console.log(cryptMail)
-    //const decryptMail = CryptoJS.HmacSHA256(cryptMail, process.env.SECRETKEY).toString();
-    //console.log(decryptMail)
-    //const test = decryptMail.toString(CryptoJS.enc.Utf8)
-    //console.log(test)
-    User.findOne({ email: cryptMail})
+    
+    User.findOne({ email: maskdata.maskEmail2(req.body.email, emailMask2Options)})
         .then(user => {
             if(!user){
                 return res.status(401).json({error:'Utilisateur non trouvé !'});
@@ -56,4 +54,3 @@ exports.login = (req, res, next) => {
         })
         .catch(error => res.status(500).json({error}));
 };
-
