@@ -58,9 +58,7 @@ exports.deleteOneSauce = (req, res, next) => {
                 { $push: {usersLiked: req.body.userId}, $inc: {likes: +1}}
             )
             .then(() => res.status(200).json({ message: 'Sauce like'}))
-          ///////////////////////////////////////////////////////////////////////////  .catch((error) => res.status(400).json({ error }));
-            console.log("jackpot !!!!!")
-            
+            .catch((error) => res.status(400).json({ error }));
         }
         else if(req.body.like == -1){
             Sauce.updateOne(
@@ -68,53 +66,29 @@ exports.deleteOneSauce = (req, res, next) => {
                 { $push: {usersDisliked: req.body.userId}, $inc: {dislikes: +1}}
             )
             .then(() => res.status(200).json({ message: 'Sauce dislike'}))
-            console.log("perdu !!!!!")
-            
+            .catch((error) => res.status(400).json({ error }));
         }
         else if(req.body.like == 0){
             Sauce.findOne({ _id: req.params.id })
             .then(sauce => 
                 {
-                    for(var i =0; i<sauce.usersLiked.length; i++){
-                        if(req.body.userId === sauce.usersLiked[i]){
-                            Sauce.updateOne(
-                                {_id: req.params.id},
-                                { $pull: {usersLiked: req.body.userId}, $inc: {likes: -1}}
-                            )
-                            .then(() => res.status(200).json({ message: 'Sauce dislike'}))   
-                        }     
+                    if(sauce.usersLiked.find(sauce => sauce.usersLiked = req.body.userId)){
+                        Sauce.updateOne(
+                            {_id: req.params.id},
+                            { $pull: {usersLiked: req.body.userId}, $inc: {likes: -1}}
+                        )
+                        .then(() => res.status(200).json({ message: 'Sauce dislike'}))
+                        .catch((error) => res.status(400).json({ error }));
                     }
-                    for(var i =0; i<sauce.usersDisliked.length; i++){
-                    if(req.body.userId === sauce.usersDisliked[i]){
+                    if(sauce.usersDisliked.find(sauce => sauce.usersDisliked = req.body.userId)){
                         Sauce.updateOne(
                             {_id: req.params.id},
                             { $pull: {usersDisliked: req.body.userId}, $inc: {dislikes: -1}}
                         )
-                        .then(() => res.status(200).json({ message: 'Sauce dislike'}))   
+                        .then(() => res.status(200).json({ message: 'Sauce dislike'}))
+                        .catch((error) => res.status(400).json({ error }));
                     }
-                }
-                }
-                )
-            
+                })}
+            })
+            .catch((error) => res.status(500).json({ error }));
         }
-    })}
-
-
-    /*
-
-if(usersLiked === req.body.userId){
-            Sauce.updateOne(
-                {_id: req.params.id},
-                { $pull: {usersLiked: req.body.userId}, $inc: {likes: -1}}
-            )
-            .then(() => res.status(200).json({ message: 'not like !'}))
-            console.log("2ème chance !!!!!")
-            }
-            else if(usersDisliked == req.body.userId){
-                Sauce.updateOne(
-                    {_id: req.params.id},
-                    { $pull: {usersDisliked: req.body.userId}, $inc: {dislikes: -1}}
-                )
-                .then(() => res.status(200).json({ message: 'not dislike !'}))
-                console.log("une 2ème chance !!!!!")
-    */

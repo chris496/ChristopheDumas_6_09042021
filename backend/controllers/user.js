@@ -6,13 +6,14 @@ const maskdata = require('maskdata');
 //masquage email
 const emailMask2Options = {
     maskWith : "*",
-    unmaskedStartCharactersBeforeAt: 2,
+    unmaskedStartCharactersBeforeAt: 4,
     unmaskedStartCharactersAfterAt: 1,
     maskAtTheRate: false
 }
 
-// fonction pour l'inscription de l'utilisateur
 exports.signup = (req, res, next) => {
+    
+    
     bcrypt.hash(req.body.password, 10)
         .then(hash => {
             const user = new User({
@@ -28,7 +29,6 @@ exports.signup = (req, res, next) => {
         .catch(error => res.status(500).json({error}));
 };
 
-// fonction pour la connexion de l'utilisateur
 exports.login = (req, res, next) => {
     
     User.findOne({ email: maskdata.maskEmail2(req.body.email, emailMask2Options)})
