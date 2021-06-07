@@ -1,23 +1,17 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
-const maskdata = require('maskdata');
-
-//masquage email
-const emailMask2Options = {
-    maskWith : "*",
-    unmaskedStartCharactersBeforeAt: 4,
-    unmaskedStartCharactersAfterAt: 1,
-    maskAtTheRate: false
-}
+const CryptoJS = require('crypto-js');
 
 exports.signup = (req, res, next) => {
-    
-    
+    var key = CryptoJS.enc.Hex.parse(process.env.SECRETKEY);
+    var iv = CryptoJS.enc.Hex.parse(process.env.SECRETIV);
+    var encrypted = CryptoJS.AES.encrypt(req.body.email, key, { iv: iv }).toString()
+    console.log(encrypted)
     bcrypt.hash(req.body.password, 10)
         .then(hash => {
             const user = new User({
-                email: maskdata.maskEmail2(req.body.email, emailMask2Options),
+                email: encrypted,
                 password:hash
             });
         user.save()
@@ -30,8 +24,14 @@ exports.signup = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
-    
-    User.findOne({ email: maskdata.maskEmail2(req.body.email, emailMask2Options)})
+    var key = CryptoJS.enc.Hex.parse(process.env.SECRETKEY);
+    var iv = CryptoJS.enc.Hex.parse(process.env.SECRETIV);
+    var encrypted = CryptoJS.AES.encrypt(req.body.email, key, { iv: iv }).toString()  
+    // Decrypt
+    //var bytes = CryptoJS.AES.decrypt(encrypted, key, { iv: iv });
+    //var decryptedData = bytes.toString(CryptoJS.enc.Utf8);
+    //console.log(decryptedData)
+    User.findOne({ email: encrypted})
         .then(user => {
             if(!user){
                 return res.status(401).json({error:'Utilisateur non trouvé !'});
